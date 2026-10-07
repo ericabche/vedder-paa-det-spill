@@ -3,7 +3,8 @@
 export const KONFIG = Object.freeze({
   KORT_FOR_SEIER: 5,
   STARTKORT: 1,        // alle får ett kort ved start
-  STANDARD_TID: 10,    // sekunder, brukes hvis kortet ikke har egen "tid"
+  TIDSVALG: [10, 15, 20], // sekunder Oppleseren kan velge mellom på kortet
+  STANDARD_TID: 10,    // brukes hvis kortet ikke har egen "tid"
   STANDARD_EKSTRA: 2,  // ekstratall for utbrudd, brukes hvis kortet ikke har "ekstra"
   MIN_SPILLERE: 3,
 });
@@ -32,6 +33,7 @@ export class Spill {
     this.ikkeUtbrudd = new Set(); // spillere som ikke kan prøve utbrudd denne runden
     this.resultat = null;      // { spiller, klarte, erUtbrudd, mistetKort }
     this.melding = null;       // info til UI (f.eks. "ingen bød")
+    this.valgtTid = null;      // tid Oppleseren har valgt for dette kortet (null = kortets forslag)
   }
 
   // ---------- Oppsett ----------
@@ -109,8 +111,18 @@ export class Spill {
 
   // ---------- Bevis ----------
 
+  /** Tiden for runden: valgt av Oppleseren, ellers kortets forslag, ellers standard. */
   get tid() {
-    return this.kategori?.tid ?? KONFIG.STANDARD_TID;
+    return this.valgtTid ?? this.kategori?.tid ?? KONFIG.STANDARD_TID;
+  }
+
+  /** Oppleseren kan endre tiden mens kortet vises i budrunden. */
+  settTid(sekunder) {
+    this.#krevFase(FASE.BUDRUNDE);
+    if (!KONFIG.TIDSVALG.includes(sekunder)) {
+      throw new Error(`Velg ${KONFIG.TIDSVALG.join(', ')} sekunder.`);
+    }
+    this.valgtTid = sekunder;
   }
 
   /** Returnerer true når målet er nådd. */
@@ -213,6 +225,7 @@ export class Spill {
     }
 
     this.kategori = this.kortstokk.trekk();
+    this.valgtTid = null; // nytt kort → kortets egen tid til noen velger noe annet
     this.bud = null;
     this.utfordring = null;
     this.resultat = null;

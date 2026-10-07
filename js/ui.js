@@ -1,6 +1,6 @@
 // ui.js – leser tilstanden fra Spill og oppdaterer DOM-en. Ingen spillregler her.
 
-import { FASE, KONFIG } from './game.js';
+import { FASE, KONFIG } from './game.js'; // eslint-disable-line no-unused-vars
 
 const $ = (id) => document.getElementById(id);
 
@@ -37,6 +37,47 @@ export function settBevisAktiv(aktiv) {
   $('start-timer-knapp').hidden = aktiv;
 }
 
+// Temaer som må velges bevisst: de er av ved start og tas ikke med i «Velg alle».
+const VOKSENTEMAER = new Set(['18+']);
+
+/** Lager én avkrysningsbrikke per tema. Kalles én gang ved oppstart. */
+export function tegnTemaer(temaer) {
+  $('tema-liste').replaceChildren(
+    ...temaer.map(({ navn, kort }) => {
+      const voksen = VOKSENTEMAER.has(navn);
+      const label = document.createElement('label');
+      label.className = voksen ? 'tema-brikke tema-voksen' : 'tema-brikke';
+      const boks = document.createElement('input');
+      boks.type = 'checkbox';
+      boks.name = 'tema';
+      boks.value = navn;
+      boks.checked = !voksen;
+      const sjekk = document.createElement('span');
+      sjekk.className = 'tema-sjekk';
+      sjekk.setAttribute('aria-hidden', 'true');
+      sjekk.textContent = '✓';
+      const tekst = document.createElement('span');
+      tekst.className = 'tema-navn';
+      tekst.textContent = navn;
+      const antall = document.createElement('small');
+      antall.textContent = kort;
+      label.append(boks, sjekk, tekst, antall);
+      return label;
+    })
+  );
+}
+
+export function valgteTemaer() {
+  return [...document.querySelectorAll('#tema-liste input:checked')].map((b) => b.value);
+}
+
+export function velgAlleTemaer(valgt) {
+  document.querySelectorAll('#tema-liste input').forEach((b) => {
+    if (valgt && VOKSENTEMAER.has(b.value)) return; // 18+ slås bare på manuelt
+    b.checked = valgt;
+  });
+}
+
 export function oppdater(spill) {
   for (const [fase, id] of Object.entries(SKJERMER)) {
     $(id).hidden = fase !== spill.fase;
@@ -66,7 +107,12 @@ export function oppdater(spill) {
           return li;
         })
       );
-      $('start-knapp').disabled = !spill.kanStarte;
+      const temaer = valgteTemaer();
+      const antallKort = spill.kortstokk.antallKort(temaer);
+      $('tema-antall').textContent = antallKort === 0
+        ? 'Ingen temaer valgt'
+        : `${antallKort} kort valgt`;
+      $('start-knapp').disabled = !spill.kanStarte || antallKort === 0;
       const mangler = Math.max(0, KONFIG.MIN_SPILLERE - spill.spillere.length);
       $('spiller-hint').textContent = mangler > 0
         ? `Legg til ${mangler} ${mangler === 1 ? 'spiller' : 'spillere'} til for å starte`
@@ -77,6 +123,11 @@ export function oppdater(spill) {
     case FASE.BUDRUNDE: {
       $('oppleser-navn').textContent = navn(spill.oppleser);
       $('kategori-tekst').textContent = spill.kategori.tekst;
+      document.querySelectorAll('.tid-velger button').forEach((knapp) => {
+        const aktiv = Number(knapp.dataset.tid) === spill.tid;
+        knapp.classList.toggle('aktiv', aktiv);
+        knapp.setAttribute('aria-pressed', aktiv);
+      });
       visKommentar('kategori-kommentar', spill.kategori);
       $('hoyeste-bud').textContent = spill.bud?.tall ?? '–';
       $('hoyeste-byder').textContent = spill.bud ? navn(spill.bud.spiller) : 'ingen';

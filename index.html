@@ -28,6 +28,16 @@
       </form>
       <ul id="spillerliste"></ul>
       <p id="spiller-hint" class="hint"></p>
+
+      <fieldset class="tema-velger">
+        <legend>Temaer</legend>
+        <div id="tema-liste" class="tema-liste"></div>
+        <div class="tema-valg">
+          <button type="button" id="velg-alle-temaer" class="lenke-knapp">Velg alle</button>
+          <span id="tema-antall" class="hint"></span>
+          <button type="button" id="fjern-alle-temaer" class="lenke-knapp">Fjern alle</button>
+        </div>
+      </fieldset>
       <button type="button" id="start-knapp" class="knapp-gronn knapp-bred" disabled>Start spillet</button>
 
       <details class="regler">
@@ -37,7 +47,7 @@
 
         <ol>
           <li><strong>Kortet trekkes.</strong> Oppleseren leser opp en kategori, for eksempel «Nevn hunderaser».</li>
-          <li><strong>Budrunde.</strong> Spillerne byr med klokka på hvor mange ting de kan nevne på 10 sekunder. Hvert bud må være høyere enn det forrige. Du kan også passe.</li>
+          <li><strong>Budrunde.</strong> Spillerne byr med klokka på hvor mange ting de kan nevne innen tiden på kortet (10, 15 eller 20 sekunder). Kortet foreslår en tid ut fra hvor vanskelig det er, men Oppleseren kan endre den. Hvert bud må være høyere enn det forrige. Du kan også passe.</li>
           <li><strong>Oppleseren velger.</strong> Når alle har budt, har Oppleseren to valg:
             <ul>
               <li><em>«Tipper du ikke klarer det!»</em> – den med høyest bud må bevise det.</li>
@@ -65,6 +75,13 @@
     <section id="skjerm-budrunde" class="skjerm" hidden>
       <p class="etikett">Oppleser: <span id="oppleser-navn"></span></p>
       <div class="kort">
+        <div class="tid-velger" role="group" aria-label="Tid for runden">
+          <span aria-hidden="true">⏱</span>
+          <button type="button" data-tid="10">10</button>
+          <button type="button" data-tid="15">15</button>
+          <button type="button" data-tid="20">20</button>
+          <span>sek</span>
+        </div>
         <p id="kategori-tekst"></p>
         <details id="kategori-kommentar" class="kommentar-boks kommentar-paa-kort">
           <summary>Hva teller?</summary>

@@ -1,8 +1,8 @@
 # Vedder på det! 🎲
 
-*Spillet om å overby* – et norsk spill i nettleseren for 3 eller flere spillere.
+*Spillet om å overby* – et norsk festspill i nettleseren for 3 eller flere spillere.
 
-Spillerne vedder på hvor mange ting de klarer å nevne innenfor en kategori, for eksempel «Nevn hunderaser», på 10 sekunder. Den som byr høyest kan bli utfordret til å bevise det. Første spiller til 5 kort vinner!
+Spillerne vedder på hvor mange ting de klarer å nevne innenfor en kategori, for eksempel «Nevn hunderaser», på 10, 15 eller 20 sekunder. Den som byr høyest kan bli utfordret til å bevise det. Første spiller til 5 kort vinner!
 
 Spillet styres fra én enhet, for eksempel en mobil eller en skjerm alle ser.
 
@@ -22,7 +22,7 @@ npx serve
 
 ## Slik spiller du
 
-1. **Kortet trekkes.** Oppleseren leser opp en kategori.
+1. **Kortet trekkes.** Oppleseren leser opp en kategori. Kortet foreslår en tid (10, 15 eller 20 sekunder) ut fra hvor vanskelig det er, og Oppleseren kan endre den.
 2. **Budrunde.** Spillerne byr med klokka på hvor mange ting de kan nevne, eller passer.
 3. **Oppleseren velger.** Enten *«Tipper du ikke klarer det!»*, så må høyeste byder bevise det, eller *«Vedder på at jeg kan det!»*, så byr Oppleseren høyere og må bevise det selv.
 4. **Bevis det!** Timeren starter, og de andre teller riktige svar.
@@ -52,13 +52,18 @@ Spillogikken i `game.js` er bygget som en tilstandsmaskin med fasene `OPPSETT �
 
 ## Legg til egne kategorier
 
-Rediger `data/kategorier.json`. Hvert kort har en tekst og et ekstratall som brukes når noen prøver å komme ut av Time Out:
+Rediger `data/kategorier.json`. Hvert kort ser slik ut:
 
 ```json
-{ "id": 21, "tekst": "Nevn superhelter", "ekstra": 2 }
+{ "id": 200, "tema": "Film, TV og musikk", "tekst": "Nevn superhelter", "tid": 15, "ekstra": 2, "kommentar": "Superhelter fra tegneserier og filmer." }
 ```
 
-Du kan også gi et kort egen tid i sekunder med `"tid": 15`. Uten `tid` brukes 10 sekunder, og uten `ekstra` brukes 2.
+- `tema` – hvilket tema kortet hører til. Nye temaer dukker automatisk opp på forsiden. Temaet `18+` er av som standard.
+- `tid` – foreslått tid: 10 (lett), 15 eller 20 sekunder (vanskelig).
+- `ekstra` – tallet som legges til når noen prøver å komme ut av Time Out.
+- `kommentar` – vises under «Hva teller?» på kortet.
+
+Uten `tid` brukes 10 sekunder, uten `ekstra` brukes 2, og uten `tema` havner kortet under «Annet».
 
 ## Innstillinger
 

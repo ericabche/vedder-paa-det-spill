@@ -233,6 +233,172 @@ header {
   font-weight: 700;
 }
 
+/* Temavalg: avkrysningsbrikker */
+.tema-velger {
+  width: 100%;
+  min-width: 0; /* fieldset har ellers innebygd minimumsbredde og renner over på mobil */
+  border: none;
+  padding: 0;
+}
+
+.tema-velger legend {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  text-transform: uppercase;
+  color: var(--gronn-mork);
+  margin: 0 auto 10px;
+}
+
+/* Rutenett med to like brede kolonner */
+.tema-liste {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+/* Hver brikke: [sirkel] [navn ........ antall] */
+.tema-brikke {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 2px solid var(--blaa-lys);
+  border-radius: 14px;
+  font-weight: 800;
+  font-size: 0.88rem;
+  text-align: left;
+  color: var(--tekst);
+  background: var(--hvit);
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.1s, border-color 0.1s;
+}
+
+.tema-brikke:hover {
+  border-color: var(--blaa);
+}
+
+/* Selve avkrysningsboksen skjules visuelt, men er fortsatt tilgjengelig */
+.tema-brikke input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Fast avkrysningssirkel, så brikken ikke endrer bredde */
+.tema-sjekk {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--gra-linje);
+  font-size: 0.7rem;
+  color: transparent;
+}
+
+.tema-navn {
+  flex: 1;
+  min-width: 0;
+  line-height: 1.2;
+  hyphens: auto;          /* deler lange ord med bindestrek */
+  overflow-wrap: anywhere; /* reserve hvis orddeling ikke støttes */
+}
+
+.tema-brikke small {
+  flex: none;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--blaa-mork);
+  background: var(--blaa-lys);
+  border-radius: 999px;
+  padding: 1px 7px;
+}
+
+/* Valgt */
+.tema-brikke:has(input:checked) {
+  background: var(--blaa-lys);
+  border-color: var(--blaa);
+}
+
+.tema-brikke:has(input:checked) .tema-sjekk {
+  background: var(--blaa);
+  border-color: var(--blaa);
+  color: var(--hvit);
+}
+
+.tema-brikke:has(input:checked) small {
+  background: var(--hvit);
+}
+
+.tema-brikke:has(input:focus-visible) {
+  outline: 3px solid var(--tekst);
+  outline-offset: 2px;
+}
+
+/* 18+ står sist i rutenettet, i rødt med stiplet kant */
+.tema-voksen {
+  border-style: dashed;
+  border-color: var(--feil);
+}
+
+.tema-voksen small {
+  color: var(--feil);
+  background: #fde8e4;
+}
+
+.tema-voksen:has(input:checked) {
+  background: #fde8e4;
+  border-style: solid;
+  border-color: var(--feil);
+}
+
+.tema-voksen:has(input:checked) .tema-sjekk {
+  background: var(--feil);
+  border-color: var(--feil);
+}
+
+/* Mobil: mer kompakte brikker */
+@media (max-width: 480px) {
+  .tema-liste { gap: 6px; }
+  .tema-brikke {
+    gap: 6px;
+    padding: 7px 8px;
+    font-size: 0.8rem;
+  }
+  .tema-sjekk { width: 16px; height: 16px; font-size: 0.6rem; }
+  .tema-brikke small { padding: 1px 5px; }
+  .tema-brikke:not(:has(input:checked)) .tema-navn { opacity: 0.55; }
+}
+
+/* Én kolonne på veldig smale skjermer */
+@media (max-width: 340px) {
+  .tema-liste { grid-template-columns: 1fr; }
+}
+
+.tema-valg {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+/* Knapp som ser ut som en lenke */
+.lenke-knapp {
+  --knapp-farge: transparent;
+  --knapp-hover: transparent;
+  font-family: var(--font-tekst);
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: none;
+  color: var(--blaa-mork);
+  text-decoration: underline;
+  padding: 4px;
+  box-shadow: none;
+}
+
 /* ---------- 6. Meldinger ---------- */
 #melding {
   background: var(--blaa-lys);
@@ -253,6 +419,38 @@ header {
   border-radius: var(--radius);
   padding: 32px 20px;
   box-shadow: 6px 6px 0 var(--gronn);
+}
+
+/* Tidsvalg øverst på kortet: ⏱ 10 | 15 | 20 sek */
+.tid-velger {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.25);
+  font-weight: 800;
+  font-size: 0.9rem;
+}
+
+.tid-velger button {
+  --knapp-farge: transparent;
+  --knapp-hover: rgba(255, 255, 255, 0.3);
+  font-family: var(--font-tekst);
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--hvit);
+  min-width: 36px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  box-shadow: none;
+}
+
+.tid-velger button.aktiv {
+  --knapp-farge: var(--hvit);
+  --knapp-hover: var(--hvit);
+  color: var(--blaa-mork);
 }
 
 #kategori-tekst {

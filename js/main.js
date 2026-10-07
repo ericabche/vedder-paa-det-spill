@@ -50,7 +50,29 @@ function kobleHendelser() {
     const knapp = e.target.closest('.fjern-knapp');
     if (knapp) utfor(() => spill.fjernSpiller(Number(knapp.dataset.index)));
   });
-  $('start-knapp').addEventListener('click', () => utfor(() => spill.start()));
+  $('start-knapp').addEventListener('click', () =>
+    utfor(() => {
+      spill.kortstokk.velgTemaer(ui.valgteTemaer());
+      spill.start();
+    })
+  );
+
+  // Temavalg
+  $('tema-liste').addEventListener('change', () => ui.oppdater(spill));
+  $('velg-alle-temaer').addEventListener('click', () => {
+    ui.velgAlleTemaer(true);
+    ui.oppdater(spill);
+  });
+  $('fjern-alle-temaer').addEventListener('click', () => {
+    ui.velgAlleTemaer(false);
+    ui.oppdater(spill);
+  });
+
+  // Tidsvalg på kortet
+  document.querySelector('.tid-velger').addEventListener('click', (e) => {
+    const knapp = e.target.closest('button[data-tid]');
+    if (knapp) utfor(() => spill.settTid(Number(knapp.dataset.tid)));
+  });
 
   // Budrunde
   $('by-knapp').addEventListener('click', () => utfor(() => spill.by(tall('bud-input'))));
@@ -95,7 +117,9 @@ function kobleHendelser() {
 async function init() {
   try {
     const kategorier = await hentKategorier();
-    spill = new Spill(new Kortstokk(kategorier));
+    const kortstokk = new Kortstokk(kategorier);
+    spill = new Spill(kortstokk);
+    ui.tegnTemaer(kortstokk.temaer);
     kobleHendelser();
     ui.oppdater(spill);
   } catch (feil) {
