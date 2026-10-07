@@ -1,0 +1,505 @@
+/* =========================================================
+   Vedder på det! – stilark
+   Fontene lastes i index.html.
+   ========================================================= */
+
+/* ---------- 1. Variabler ---------- */
+:root {
+  --blaa: #6bb8de;
+  --blaa-mork: #3d94c0;
+  --blaa-lys: #dff0f9;
+  --gronn: #b5cc3a;
+  --gronn-mork: #8fa323;
+  --hvit: #ffffff;
+  --gra-linje: #d6d9dc;
+  --tekst: #2b3a42;
+  --feil: #e5674f;
+
+  --font-display: 'Lilita One', system-ui, sans-serif;
+  --font-tekst: 'Nunito', system-ui, sans-serif;
+
+  --radius: 18px;
+  --maks-bredde: 480px;
+}
+
+/* ---------- 2. Grunnoppsett ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+[hidden] { display: none !important; }
+
+body {
+  font-family: var(--font-tekst);
+  color: var(--tekst);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px 48px;
+  /* Lyseblå bakgrunn med prikkmønster */
+  background-color: var(--blaa-lys);
+  background-image: radial-gradient(var(--hvit) 2px, transparent 2px);
+  background-size: 24px 24px;
+}
+
+header,
+main {
+  width: 100%;
+  max-width: var(--maks-bredde);
+}
+
+/* Spillebrettet: hvit flate med tykk kant, i samme stil som knappene */
+main {
+  background: var(--hvit);
+  border: 3px solid var(--blaa);
+  border-radius: 28px;
+  padding: 28px 24px;
+  box-shadow: 0 8px 0 var(--blaa);
+}
+
+/* ---------- 3. Typografi ---------- */
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  text-align: center;
+}
+
+h1 {
+  font-size: clamp(2.5rem, 10vw, 4rem);
+  color: var(--blaa);
+  transform: rotate(-2deg); /* litt lekent skrått */
+  /* Hvit kontur + myk skygge */
+  text-shadow:
+    -3px -3px 0 var(--hvit), 3px -3px 0 var(--hvit),
+    -3px 3px 0 var(--hvit), 3px 3px 0 var(--hvit),
+    5px 5px 0 var(--gra-linje);
+}
+
+h2 {
+  font-size: 1.6rem;
+  color: var(--gronn-mork);
+}
+
+.undertittel {
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 4vw, 1.5rem);
+  color: var(--gronn);
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: -4px;
+}
+
+/* Små etiketter: «Oppleser: …», «… sin tur» */
+.etikett {
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: var(--gronn-mork);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.hint {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--blaa-mork);
+}
+
+.eller {
+  color: var(--gra-linje);
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+/* ---------- 4. Header og poengtavle ---------- */
+header {
+  margin-bottom: 24px;
+}
+
+#poengtavle {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+#poengtavle li {
+  background: var(--hvit);
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-weight: 700;
+}
+
+#poengtavle li.oppleser {
+  outline: 3px solid var(--gronn);
+}
+
+#poengtavle li.timeout {
+  background: var(--feil);
+  color: var(--hvit);
+}
+
+/* ---------- 5. Skjermer og oppsett ---------- */
+.skjerm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+
+/* Input + knapper på rad, brytes på smale skjermer */
+.rad {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+
+/* Tekstfeltet for navn tar resten av raden */
+.rad input[type="text"] {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Spillerliste som navnebrikker */
+#spillerliste {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+
+#spillerliste:empty {
+  display: none;
+}
+
+#spillerliste li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--blaa-lys);
+  border-radius: 999px;
+  padding: 6px 6px 6px 6px;
+  font-weight: 800;
+}
+
+#spillerliste .initial {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--blaa);
+  color: var(--hvit);
+  font-family: var(--font-display);
+}
+
+#spillerliste .fjern-knapp {
+  --knapp-farge: transparent;
+  --knapp-hover: var(--hvit);
+  color: var(--blaa-mork);
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 50%;
+}
+
+.liste {
+  list-style: none;
+  width: 100%;
+}
+
+.liste li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px;
+  border-bottom: 2px solid var(--gra-linje);
+  font-weight: 700;
+}
+
+/* ---------- 6. Meldinger ---------- */
+#melding {
+  background: var(--blaa-lys);
+  border-radius: var(--radius);
+  padding: 10px 16px;
+  margin-bottom: 16px;
+  text-align: center;
+  font-weight: 700;
+}
+
+/* ---------- 7. Kategorikort ---------- */
+.kort {
+  width: 100%;
+  background: var(--blaa);
+  color: var(--hvit);
+  border: 4px solid var(--hvit);
+  outline: 3px solid var(--blaa);
+  border-radius: var(--radius);
+  padding: 32px 20px;
+  box-shadow: 6px 6px 0 var(--gronn);
+}
+
+#kategori-tekst {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  line-height: 1.2;
+}
+
+/* Nedtrekksboks med kortets kommentar: hva som teller som gyldig svar */
+.kommentar-boks {
+  margin-top: 10px;
+}
+
+.kommentar-boks summary {
+  display: inline-block;
+  font-weight: 800;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 4px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  list-style: none;
+  background: var(--hvit);
+  color: var(--blaa-mork);
+}
+
+.kommentar-boks summary::-webkit-details-marker { display: none; }
+.kommentar-boks summary::before { content: 'ⓘ '; }
+.kommentar-boks summary::after { content: ' ▾'; }
+.kommentar-boks[open] summary::after { content: ' ▴'; }
+
+.kommentar-boks summary:focus-visible {
+  outline: 3px solid var(--tekst);
+  outline-offset: 2px;
+}
+
+.kommentar-boks p {
+  margin-top: 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+/* På det blå kortet: gjennomsiktig «pille» og hvit tekst */
+.kommentar-paa-kort summary {
+  background: rgba(255, 255, 255, 0.25);
+  color: var(--hvit);
+}
+
+/* Kategorien vist på nytt under bevis, så dommerne ser reglene */
+.bevis-kategori {
+  width: 100%;
+  background: var(--blaa-lys);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+}
+
+#bevis-kategori-tekst {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: var(--blaa-mork);
+  text-transform: uppercase;
+}
+
+/* ---------- 8. Knapper ---------- */
+button {
+  --knapp-farge: var(--blaa);
+  --knapp-hover: var(--blaa-mork);
+  --knapp-skygge: var(--blaa-mork);
+
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  background: var(--knapp-farge);
+  color: var(--hvit);
+  border: none;
+  border-radius: var(--radius);
+  padding: 12px 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 0 var(--knapp-skygge);
+  transition: transform 0.1s, box-shadow 0.1s, background 0.1s;
+}
+
+button:hover:not(:disabled) {
+  background: var(--knapp-hover);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(4px);
+  box-shadow: none;
+}
+
+button:focus-visible {
+  outline: 3px solid var(--tekst);
+  outline-offset: 3px;
+}
+
+button:disabled {
+  --knapp-farge: var(--gra-linje);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* Varianter */
+.knapp-gronn {
+  --knapp-farge: var(--gronn);
+  --knapp-hover: var(--gronn-mork);
+  --knapp-skygge: var(--gronn-mork);
+}
+
+.knapp-sekundaer {
+  --knapp-farge: var(--hvit);
+  --knapp-hover: var(--blaa-lys);
+  color: var(--blaa-mork);
+  border: 3px solid var(--blaa);
+}
+
+.knapp-bred {
+  width: 100%;
+  padding: 16px;
+  font-size: 1.4rem;
+}
+
+.knapp-stor {
+  width: 100%;
+  font-size: 1.8rem;
+  padding: 24px;
+}
+
+.fjern-knapp {
+  font-size: 0.8rem;
+  padding: 4px 10px;
+  box-shadow: none;
+}
+
+/* ---------- 9. Input ---------- */
+input {
+  font-family: var(--font-tekst);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--tekst);
+  padding: 10px 14px;
+  border: 3px solid var(--gra-linje);
+  border-radius: var(--radius);
+  outline: none;
+}
+
+input:focus {
+  border-color: var(--blaa);
+}
+
+input[type="number"] {
+  width: 90px;
+  text-align: center;
+}
+
+/* ---------- 10. Bevis: timer og teller ---------- */
+.timer {
+  font-family: var(--font-display);
+  font-size: 5rem;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--hvit);
+  color: var(--gronn-mork);
+  border: 10px solid var(--blaa);
+  box-shadow: inset 0 0 0 6px var(--blaa-lys);
+}
+
+.timer.lite-tid {
+  color: var(--feil);
+  border-color: var(--feil);
+  animation: puls 0.5s infinite alternate;
+}
+
+@keyframes puls {
+  to { transform: scale(1.05); }
+}
+
+.teller {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  color: var(--blaa);
+}
+
+/* ---------- 11. Resultat ---------- */
+#resultat-tekst.seier { color: var(--gronn-mork); }
+#resultat-tekst.tap   { color: var(--feil); }
+
+/* ---------- 12. Regler ---------- */
+.regler {
+  width: 100%;
+  text-align: left;
+  border: 3px dashed var(--blaa-lys);
+  border-radius: var(--radius);
+  padding: 12px 20px;
+  margin-top: 8px;
+}
+
+.regler[open] {
+  background: var(--blaa-lys);
+  border-color: transparent;
+}
+
+.regler summary {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--blaa-mork);
+  cursor: pointer;
+  list-style: none;
+}
+
+.regler summary::-webkit-details-marker { display: none; }
+.regler summary::after { content: ' ▾'; }
+.regler[open] summary::after { content: ' ▴'; }
+
+.regler h3 {
+  color: var(--gronn-mork);
+  text-align: left;
+  margin: 16px 0 6px;
+}
+
+.regler p,
+.regler li { line-height: 1.5; }
+
+.regler ol,
+.regler ul {
+  padding-left: 22px;
+  margin: 8px 0;
+}
+
+.regler li { margin-bottom: 6px; }
+
+/* ---------- 13. Smale skjermer ---------- */
+@media (max-width: 420px) {
+  main {
+    padding: 20px 16px;
+    border-radius: 22px;
+  }
+}
+
+/* ---------- 14. Redusert bevegelse ---------- */
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vedder på det!</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@400;700;800&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <h1>Vedder på det!</h1>
+    <p class="undertittel">Spillet om å overby</p>
+    <!-- Poengoversikt, fylles av ui.js -->
+    <ul id="poengtavle" aria-label="Poeng"></ul>
+  </header>
+
+  <main>
+    <!-- Oppsett: legg til spillere -->
+    <section id="skjerm-oppsett" class="skjerm">
+      <h2>Spillere</h2>
+      <form id="ny-spiller-skjema" class="rad">
+        <input type="text" id="spillernavn" placeholder="Navn" autocomplete="off" required>
+        <button type="submit">Legg til</button>
+      </form>
+      <ul id="spillerliste"></ul>
+      <p id="spiller-hint" class="hint"></p>
+      <button type="button" id="start-knapp" class="knapp-gronn knapp-bred" disabled>Start spillet</button>
+
+      <details class="regler">
+        <summary>Slik spiller du</summary>
+
+        <p><strong>Mål:</strong> Vær den første til å samle 5 kort! Alle starter med 1 kort.</p>
+
+        <ol>
+          <li><strong>Kortet trekkes.</strong> Oppleseren leser opp en kategori, for eksempel «Nevn hunderaser».</li>
+          <li><strong>Budrunde.</strong> Spillerne byr med klokka på hvor mange ting de kan nevne på 10 sekunder. Hvert bud må være høyere enn det forrige. Du kan også passe.</li>
+          <li><strong>Oppleseren velger.</strong> Når alle har budt, har Oppleseren to valg:
+            <ul>
+              <li><em>«Tipper du ikke klarer det!»</em> – den med høyest bud må bevise det.</li>
+              <li><em>«Vedder på at jeg kan det!»</em> – Oppleseren byr enda høyere og må bevise det selv.</li>
+            </ul>
+          </li>
+          <li><strong>Bevis det!</strong> Timeren starter, og spilleren ramser opp. De andre teller med «+1 Riktig».</li>
+          <li><strong>Resultat.</strong> Klarer du det, vinner du kortet. Klarer du det ikke, mister du et kort. Har du ingen kort å miste, havner du i <strong>Time Out</strong>.</li>
+        </ol>
+
+        <h3>Time Out</h3>
+        <p>Spillere i Time Out byr ikke, men får prøve å komme ut i neste runde. Etter utfordringen må de nevne like mange som utfordrerens tall, pluss ekstratallet på kortet. Klarer de det, er de tilbake i spillet og får et kort!</p>
+
+        <h3>Husregler</h3>
+        <ul>
+          <li>Hvis ingen byr, trekkes et nytt kort.</li>
+          <li>Oppleser-rollen går videre med klokka hver runde.</li>
+          <li>Er det færre enn to spillere igjen utenfor Time Out, slippes alle ut.</li>
+          <li>De andre spillerne avgjør om et svar er gyldig.</li>
+        </ul>
+      </details>
+    </section>
+
+    <!-- Budrunde -->
+    <section id="skjerm-budrunde" class="skjerm" hidden>
+      <p class="etikett">Oppleser: <span id="oppleser-navn"></span></p>
+      <div class="kort">
+        <p id="kategori-tekst"></p>
+        <details id="kategori-kommentar" class="kommentar-boks kommentar-paa-kort">
+          <summary>Hva teller?</summary>
+          <p></p>
+        </details>
+      </div>
+      <p>Høyeste bud: <strong id="hoyeste-bud">–</strong> (<span id="hoyeste-byder">ingen</span>)</p>
+      <p class="etikett"><span id="aktiv-spiller"></span> sin tur</p>
+      <div class="rad">
+        <input type="number" id="bud-input" min="1" inputmode="numeric" aria-label="Ditt bud">
+        <button type="button" id="by-knapp" class="knapp-gronn">By</button>
+        <button type="button" id="pass-knapp" class="knapp-sekundaer">Pass</button>
+      </div>
+    </section>
+
+    <!-- Oppleseren velger -->
+    <section id="skjerm-oppleser" class="skjerm" hidden>
+      <h2><span id="oppleser-navn-2"></span>, hva velger du?</h2>
+      <button type="button" id="betcha-knapp" class="knapp-stor">Tipper du ikke klarer det!</button>
+      <p class="eller">eller</p>
+      <div class="rad">
+        <input type="number" id="oppleser-bud-input" min="1" inputmode="numeric" aria-label="Ditt bud">
+        <button type="button" id="bet-i-can-knapp" class="knapp-gronn">Vedder på at jeg kan det!</button>
+      </div>
+    </section>
+
+    <!-- Bevis: timer og telling -->
+    <section id="skjerm-bevis" class="skjerm" hidden>
+      <h2><span id="utfordret-navn"></span> må nevne <span id="mal-antall"></span></h2>
+      <div class="bevis-kategori">
+        <p id="bevis-kategori-tekst"></p>
+        <details id="bevis-kommentar" class="kommentar-boks">
+          <summary>Hva teller?</summary>
+          <p></p>
+        </details>
+      </div>
+      <p id="timer" class="timer" aria-live="polite">10</p>
+      <p class="teller"><span id="antall-riktige">0</span> / <span id="mal-antall-2"></span></p>
+      <button type="button" id="start-timer-knapp">Start timeren</button>
+      <button type="button" id="riktig-knapp" class="knapp-gronn knapp-stor">+1 Riktig</button>
+    </section>
+
+    <!-- Resultat -->
+    <section id="skjerm-resultat" class="skjerm" hidden>
+      <h2 id="resultat-tekst"></h2>
+      <button type="button" id="neste-knapp">Neste</button>
+    </section>
+
+    <!-- Time Out: forsøk på å komme ut -->
+    <section id="skjerm-timeout" class="skjerm" hidden>
+      <h2>Time Out</h2>
+      <p>Klarer du å nevne <strong id="utbrudd-mal"></strong>? Da er du ute av Time Out og får et kort!</p>
+      <ul id="timeout-liste" class="liste"></ul>
+      <button type="button" id="ingen-utfordring-knapp" class="knapp-sekundaer">Ingen prøver</button>
+    </section>
+
+    <!-- Spillet er over -->
+    <section id="skjerm-slutt" class="skjerm" hidden>
+      <h2>🏆 <span id="vinner-slutt"></span> vant!</h2>
+      <p>Mester i å vedde!</p>
+      <button type="button" id="nytt-spill-knapp" class="knapp-gronn">Nytt spill</button>
+    </section>
+  </main>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
