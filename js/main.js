@@ -4,14 +4,47 @@ import { Spill, FASE } from './game.js';
 import { hentKategorier, Kortstokk } from './cards.js';
 import { Timer } from './timer.js';
 import * as ui from './ui.js';
+import * as lyd from './lyd.js';
 
 const $ = (id) => document.getElementById(id);
 
 let spill;
 const timer = new Timer({
-  onTikk: (sek) => ui.visTid(sek),
+  onTikk: (sek) => {
+    ui.visTid(sek);
+    if (sek >= 1 && sek <= 3) {
+      lyd.nedtelling(sek);
+      lyd.vibrer('nedtelling');
+    }
+  },
   onFerdig: () => utfor(() => spill.avsluttBevis()),
 });
+
+// Spiller lyd og vibrasjon når spillet går over i en ny fase.
+function lydForFaseskifte(fra, til) {
+  if (fra === til) return;
+  if (til === FASE.RESULTAT) {
+    // Man kan bare feile ved at tiden går ut, så tap = buzzer.
+    if (spill.resultat.klarte) {
+      lyd.seier();
+      lyd.vibrer('seier');
+    } else {
+      lyd.buzzer();
+      lyd.vibrer('buzzer');
+    }
+  }
+  if (til === FASE.SLUTT) {
+    lyd.fanfare();
+    lyd.vibrer('seier');
+  }
+}
+
+function oppdaterLydknapp() {
+  const knapp = $('lyd-knapp');
+  const paa = lyd.erPaa();
+  knapp.setAttribute('aria-pressed', paa);
+  knapp.querySelector('.lyd-tekst').textContent = paa ? 'Lyd på' : 'Lyd av';
+}
 
 // Kjører en handling, viser eventuelle feil/meldinger og tegner skjermen på nytt.
 function utfor(handling) {
@@ -32,12 +65,23 @@ function utfor(handling) {
     ui.visTid(spill.tid);
     ui.settBevisAktiv(false);
   }
+  lydForFaseskifte(forrigeFase, spill.fase);
   ui.oppdater(spill);
 }
 
 const tall = (id) => Number($(id).value);
 
 function kobleHendelser() {
+  // Lyd: nettlesere tillater bare lyd etter at brukeren har trykket på noe,
+  // så lydmotoren startes ved første trykk på siden.
+  document.addEventListener('pointerdown', lyd.aktiver);
+  document.addEventListener('keydown', lyd.aktiver);
+  $('lyd-knapp').addEventListener('click', () => {
+    lyd.settPaa(!lyd.erPaa());
+    oppdaterLydknapp();
+    if (lyd.erPaa()) lyd.riktig(); // lite pip som bekreftelse
+  });
+
   // Oppsett
   $('ny-spiller-skjema').addEventListener('submit', (e) => {
     e.preventDefault();
@@ -89,12 +133,18 @@ function kobleHendelser() {
 
   // Bevis
   $('start-timer-knapp').addEventListener('click', () => {
+    lyd.start();
     timer.start(spill.tid);
     ui.settBevisAktiv(true);
   });
   $('riktig-knapp').addEventListener('click', () =>
     utfor(() => {
-      if (spill.registrerRiktig()) {
+      const ferdig = spill.registrerRiktig();
+      if (!ferdig) {
+        lyd.riktig(); // siste riktige får seierslyden i stedet
+        lyd.vibrer('riktig');
+      }
+      if (ferdig) {
         timer.stopp();
         spill.avsluttBevis();
       }
@@ -121,6 +171,7 @@ async function init() {
     spill = new Spill(kortstokk);
     ui.tegnTemaer(kortstokk.temaer);
     kobleHendelser();
+    oppdaterLydknapp();
     ui.oppdater(spill);
   } catch (feil) {
     console.error(feil);

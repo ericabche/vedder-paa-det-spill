@@ -43,6 +43,7 @@ De fullstendige reglene finnes også i spillet under «Slik spiller du».
 │   ├── game.js           # Spillregler og tilstand (ingen DOM)
 │   ├── ui.js             # Viser riktig skjerm og oppdaterer innholdet
 │   ├── timer.js          # Nedtelling
+│   ├── lyd.js            # Lydeffekter og vibrasjon (Web Audio API)
 │   └── cards.js          # Laster og stokker kategoriene
 └── data/
     └── kategorier.json   # Kategoriene
@@ -64,6 +65,10 @@ Rediger `data/kategorier.json`. Hvert kort ser slik ut:
 - `kommentar` – vises under «Hva teller?» på kortet.
 
 Uten `tid` brukes 10 sekunder, uten `ekstra` brukes 2, og uten `tema` havner kortet under «Annet».
+
+## Lyd og vibrasjon
+
+Spillet piper de siste tre sekundene, spiller buzzer når tiden er ute og jubel når noen klarer det. På Android vibrerer telefonen i tillegg (iPhone støtter ikke vibrasjon i nettleseren). Alle lydene lages i koden, så det trengs ingen lydfiler. Lyd og vibrasjon kan slås av med knappen øverst til høyre, og valget huskes.
 
 ## Innstillinger
 

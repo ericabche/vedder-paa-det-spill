@@ -124,6 +124,47 @@ header {
   margin-bottom: 24px;
 }
 
+/* Lyd av/på: egen linje øverst til høyre, over tittelen */
+.lyd-knapp {
+  --knapp-farge: var(--hvit);
+  --knapp-hover: var(--hvit);
+  display: flex;
+  width: fit-content;
+  margin: 0 0 8px auto;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 2px solid var(--blaa);
+  border-radius: 999px;
+  box-shadow: none;
+  font-family: var(--font-tekst);
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: none;
+  color: var(--blaa-mork);
+}
+
+.lyd-knapp svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.lyd-knapp .hoyttaler { fill: currentColor; }
+.lyd-knapp .lyd-av { display: none; }
+
+.lyd-knapp[aria-pressed="false"] {
+  border-color: var(--gra-linje);
+  color: #8a959b;
+}
+
+.lyd-knapp[aria-pressed="false"] .lyd-paa { display: none; }
+.lyd-knapp[aria-pressed="false"] .lyd-av { display: inline; }
+
 #poengtavle {
   list-style: none;
   display: flex;
